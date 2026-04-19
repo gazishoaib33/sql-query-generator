@@ -14,16 +14,18 @@
 
 Takes a plain English question + a database schema and returns a ready-to-run SQL query — powered by Anthropic's Claude API with structured prompt engineering.
 
-**Example:**
-Input:   "Show total revenue by product category, sorted highest first"
-Schema:  E-Commerce DB (customers, orders, products, order_items)
-Output:
-SELECT p.category, SUM(oi.quantity * oi.unit_price) AS total_revenue
-FROM order_items oi
-JOIN products p ON oi.product_id = p.id
-JOIN orders o ON oi.order_id = o.id
-GROUP BY p.category
-ORDER BY total_revenue DESC;
+**Input:** `"Show total revenue by product category, sorted highest first"`
+
+**Schema:** E-Commerce DB (customers, orders, products, order_items)
+
+**Output:**
+
+    SELECT p.category, SUM(oi.quantity * oi.unit_price) AS total_revenue
+    FROM order_items oi
+    JOIN products p ON oi.product_id = p.id
+    JOIN orders o ON oi.order_id = o.id
+    GROUP BY p.category
+    ORDER BY total_revenue DESC;
 
 ---
 
@@ -102,17 +104,17 @@ Visit **http://127.0.0.1:8000/docs** for the interactive API documentation.
 
 ## Project Structure
 
-sql-query-generator/
-├── backend/
-│   ├── main.py        # FastAPI app — REST API endpoints
-│   └── prompt.py      # Prompt engineering — schema injection + few-shot examples
-├── frontend/
-│   └── index.html     # Single-file UI
-├── eval/
-│   └── run_eval.py    # Spider benchmark evaluation script
-├── .env               # API key (gitignored)
-├── requirements.txt
-└── README.md
+    sql-query-generator/
+    ├── backend/
+    │   ├── main.py          # FastAPI app — REST API endpoints
+    │   └── prompt.py        # Prompt engineering — schema injection + few-shot examples
+    ├── frontend/
+    │   └── index.html       # Single-file UI
+    ├── eval/
+    │   └── run_eval.py      # Spider benchmark evaluation script
+    ├── .env                 # API key (gitignored)
+    ├── requirements.txt
+    └── README.md
 
 ---
 
@@ -141,16 +143,11 @@ sql-query-generator/
 
 ## How It Works
 
-User question + Schema
-↓
-prompt.py — builds structured prompt
-(system rules + few-shot examples + schema injection)
-↓
-Anthropic Claude API
-↓
-SQL query returned
-↓
-FastAPI sends { sql, latency_ms } to frontend
+1. User submits a plain English question + database schema
+2. `prompt.py` builds a structured prompt with system rules, few-shot examples, and schema injection
+3. Anthropic Claude API generates the SQL query
+4. FastAPI returns `{ sql, latency_ms }` to the frontend
+5. Frontend renders the SQL with Prism.js syntax highlighting
 
 ---
 
